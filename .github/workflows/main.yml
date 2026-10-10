@@ -1,15 +1,17 @@
 name: Trustarr Fun Commit
 on:
-  workflow_dispatch:
+  workflow_dispatch:   # manual trigger button
   schedule:
-    - cron: '0 12 * * *'
+    - cron: '0 12 * * *'  # runs daily at noon
 
 jobs:
   commit:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # allow pushing commits
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4   # updated to Node.js 24 compatible
 
       - name: Configure Git
         run: |
@@ -23,6 +25,6 @@ jobs:
           git commit -m "Fun commit from Copilot" || echo "No changes to commit"
 
       - name: Push changes
-        uses: ad-m/github-push-action@v0.8.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        run: git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
