@@ -1,8 +1,3 @@
-gh api \
-  repos/abhirawatt786/trustarr/contents/.github/workflows/fun.yml \
-  -X PUT \
-  -F message='Add fun workflow' \
-  -F content="$(base64 <<'EOF'
 name: Trustarr Fun Commit
 on:
   workflow_dispatch:
@@ -15,13 +10,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "CopilotBot"
+          git config --global user.email "you@example.com"
+
       - name: Make a commit
         run: |
           echo "Ping from Copilot at $(date)" >> activity.log
-          git config --global user.name "CopilotBot"
-          git config --global user.email "you@example.com"
           git add activity.log
-          git commit -m "Fun commit from Copilot"
-          git push
-EOF
-)"
+          git commit -m "Fun commit from Copilot" || echo "No changes to commit"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
